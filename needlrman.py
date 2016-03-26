@@ -1,32 +1,46 @@
 __author__ = 'AhmedA'
 
 
+def getMaxMove(matrix, currentI, currentJ, match, mismatch, gap, seq1, seq2):
+    matchOrmis = mismatch
+    if seq1[currentI-1] == seq2[currentJ-1]:
+        matchOrmis = match
+    if (matrix[currentI-1][currentJ-1] + matchOrmis) >= (matrix[currentI-1][currentJ] + gap)\
+        and  (matrix[currentI-1][currentJ-1] + matchOrmis) >= (matrix[currentI][currentJ-1] + gap):
+        return "diagonal"
+    elif (matrix[currentI][currentJ-1] + gap) >= (matrix[currentI-1][currentJ-1] + matchOrmis)\
+        and  (matrix[currentI][currentJ-1] + gap) >= (matrix[currentI-1][currentJ] + gap):
+        return "horizontal"
+    elif (matrix[currentI-1][currentJ] + gap) >= (matrix[currentI-1][currentJ-1] + matchOrmis)\
+        and  (matrix[currentI-1][currentJ] + gap) >= (matrix[currentI][currentJ-1] + gap):
+        return "vertical"
+
 def backTrack(matrix, seq1, seq2, currentI, currentJ, result, maxScore):
     if currentI == 0 and currentJ == 0:
         print("done")
         return
         #return result
-    if matrix[currentI-1][currentJ-1] <= matrix[currentI][currentJ]:
-        print("diagonal")
-        print(seq1[currentI-1],seq2[currentJ-1])
-        #result[0] = result[0]+seq1[currentI-1]
-        #result[1] = result[1]+seq2[currentJ-1]
-        backTrack(matrix, seq1, seq2, currentI-1, currentJ-1, result, matrix[currentI-1][currentJ-1])
-    elif matrix[currentI-1][currentJ] <= matrix[currentI][currentJ]:
-        print("-",seq2[currentJ-1])
-        #result[0] = result[0]+"-"
-        #result[1] = result[1]+seq2[currentJ]
-        backTrack(matrix, seq1, seq2, currentI-1, currentJ, result, matrix[currentI-1][currentJ])
-    elif matrix[currentI][currentJ-1] <= matrix[currentI][currentJ]:
-        print(seq1[currentI-1],"-")
-        #result[0] = result[0]+seq1[currentI-1]
-        #result[1] = result[1]+"-"
-        backTrack(matrix, seq1, seq2, currentI, currentJ-1, result, matrix[currentI-1][currentJ])
-
+    else:
+        move = getMaxMove(matrix,currentI,currentJ,2,-1,-2,seq1,seq2)
+        if move == "diagonal":
+            print(seq1[currentI-1], seq2[currentJ-1], "diagonal move")
+            backTrack(matrix, seq1, seq2, currentI-1, currentJ-1, result, maxScore)
+        elif move == "horizontal":
+            print(seq1[currentI-1], "-", "horizontal move")
+            backTrack(matrix, seq1, seq2, currentI, currentJ-1, result, maxScore)
+        elif move == "vertical":
+            print(currentI, currentJ, "val")
+            print("-", seq2[currentJ-1], "vertical move")
+            backTrack(matrix, seq1, seq2, currentI-1, currentJ, result, maxScore)
 
 # sequences definitions
 seq1 = "gaattcagtta"
 seq2 = "ggatcga"
+
+'''
+        gaa-tc---a
+        ggaatccgga
+'''
 # parameters definitions
 match = 2
 misMatch = -1
